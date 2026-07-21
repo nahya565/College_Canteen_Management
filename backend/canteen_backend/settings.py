@@ -109,11 +109,17 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR.parent / 'dist',
-]
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATIC_URL = "/static/"
+
+# Required for Render
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Only include the React build folder if it exists
+DIST_DIR = BASE_DIR.parent / "dist"
+if DIST_DIR.exists():
+    STATICFILES_DIRS = [DIST_DIR]
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CORS Config
 CORS_ALLOW_ALL_ORIGINS = True
