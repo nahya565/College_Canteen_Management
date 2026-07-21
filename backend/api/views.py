@@ -158,21 +158,33 @@ This is an automated email from the MITS Canteen Management System.
 </html>
 """
 
-        try:
-            email = EmailMultiAlternatives(
-                subject,
-                text_content,
-                settings.DEFAULT_FROM_EMAIL,
-                [self.request.user.email],
+        
+        email = EmailMultiAlternatives(
+            subject,
+            text_content,
+            settings.DEFAULT_FROM_EMAIL,
+            [self.request.user.email],
         )
 
-            email.attach_alternative(html_content, "text/html")
-            email.send(fail_silently=True)
+        email.attach_alternative(html_content, "text/html")
+
+            # Add these lines here
+        print("EMAIL_HOST:", settings.EMAIL_HOST)
+        print("EMAIL_PORT:", settings.EMAIL_PORT)
+        print("EMAIL_HOST_USER:", settings.EMAIL_HOST_USER)
+        print("DEFAULT_FROM_EMAIL:", settings.DEFAULT_FROM_EMAIL)
+
+            # Student email
+        try:
+            email.send(fail_silently=False)
+            print("Student email sent successfully")
+        except Exception as e:
+            print("Student email error:", e)
 
             # Admin email
-            admin_subject = "🔔 New Order Received"
+        admin_subject = "🔔 New Order Received"
 
-            admin_message = f"""
+        admin_message = f"""
 A new order has been placed.
 
 Student Name : {self.request.user.username}
@@ -183,17 +195,18 @@ Amount   : ₹{order.grand_total}
 Status   : {order.status}
 """
 
-            admin_email = EmailMultiAlternatives(
-                admin_subject,
-                admin_message,
-                settings.DEFAULT_FROM_EMAIL,
-                ["nahyajaswitha@gmail.com"],   # Change to your admin email if needed
-            )
+        admin_email = EmailMultiAlternatives(
+            admin_subject,
+            admin_message,
+            settings.DEFAULT_FROM_EMAIL,
+            ["nahyaa0407@gmail.com"],
+        )
 
-            admin_email.send(fail_silently=True)
+        try:
+            admin_email.send(fail_silently=False)
             print("Admin email sent successfully")
         except Exception as e:
-            print("Error sending order confirmation email:", e)
+            print("Admin email error:", e)
 
     def perform_update(self, serializer):
         print("perform_update() called")
@@ -221,7 +234,7 @@ Thank you!
                 message,
                 settings.DEFAULT_FROM_EMAIL,
                 [order.user.email],
-            ).send(fail_silently=True)
+            ).send(fail_silently=False)
 
         # Payment Completed Email
         elif order.status == "completed":
@@ -243,7 +256,7 @@ Thank you for ordering from MITS College Canteen.
                 message,
                 settings.DEFAULT_FROM_EMAIL,
                 [order.user.email],
-            ).send(fail_silently=True)
+            ).send(fail_silently=False)
 
             # Admin Notification
             EmailMultiAlternatives(
@@ -258,8 +271,9 @@ Order ID : {order.id}
 Amount   : ₹{order.grand_total}
 """,
                 settings.DEFAULT_FROM_EMAIL,
-                ["nahyajaswitha@gmail.com"],
-            ).send(fail_silently=True)
+                ["nahyaa0407@gmail.com"],
+            ).send(fail_silently=False)
+
     def get_permissions(self):
         if self.action == "destroy":
             return [permissions.IsAdminUser()]
