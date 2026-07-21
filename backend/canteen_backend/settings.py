@@ -10,7 +10,6 @@ SECRET_KEY = 'django-insecure-dip2osdcdlfst#6#ob8(vr(1ib-^%(3^ybta@*-asra*#*s1iz
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
-DEBUG = os.environ.get("DEBUG", "True") == "True"
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-dip2osdcdlfst#6#ob8(vr(1ib-^%(3^ybta@*-asra*#*s1iz")
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
