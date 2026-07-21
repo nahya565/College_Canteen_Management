@@ -1,12 +1,31 @@
 from django.contrib import admin
-from django.urls import path, include
-from django.http import HttpResponse
+from django.urls import path, include, re_path
+from django.views.static import serve
+from django.views.generic import TemplateView
+from django.conf import settings
+from pathlib import Path
 
-def home(request):
-    return HttpResponse("College Canteen Backend is Running Successfully 🚀")
+DIST_DIR = Path(settings.BASE_DIR).parent / "dist"
 
 urlpatterns = [
-    path("", home),
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
+
+    re_path(r"^assets/(?P<path>.*)$", serve, {
+        "document_root": DIST_DIR / "assets"
+    }),
+
+    re_path(r"^images/(?P<path>.*)$", serve, {
+        "document_root": DIST_DIR / "images"
+    }),
+
+    re_path(r"^favicon\.svg$", serve, {
+        "document_root": DIST_DIR
+    }),
+
+    re_path(r"^icons\.svg$", serve, {
+        "document_root": DIST_DIR
+    }),
+
+    re_path(r"^.*$", TemplateView.as_view(template_name="index.html")),
 ]
